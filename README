@@ -1,10 +1,14 @@
-Project Charon will be a Windows Multitool for finding and fixing various problems that seem to get
+Project Charon is a Windows Multitool for finding and fixing various problems that seem to get
 missed by most other tools.
+
+Supported Operating Systems:
+XP, Vista, 7, and 8
+32 bit and 64 bit
 
 Currently supported tools/fixes:
 ~Fixing registry corruption causing Windows to not detect CD/DVD drives.
 ~Resetting the HP Recovery Media Creation software to allow more copies to be made.
-~Running the SFC tool for Windows and generating a log in Vista and 7 (used for attempting to find and repair minor OS corruption while booted).
+~Running the SFC tool for Windows and generating a log in Vista, 7, and 8 (used for attempting to find and repair minor OS corruption while booted).
 ~Registering or unregistering every .dll in a folder.
 
 Any further suggested tools/fixes are welcomed.

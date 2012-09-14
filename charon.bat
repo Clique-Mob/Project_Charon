@@ -1,5 +1,5 @@
 @ECHO OFF
-TITLE Charon v0.5.3
+TITLE Charon v0.5.4
 COLOR 0c
 ::Created by the GCM team::
 ::Lane Garland (aka need2)::
@@ -22,6 +22,9 @@ IF %ERRORLEVEL% EQU 0 SET det_os=vista
 
 ver | findstr /i "6\.1\." > nul
 IF %ERRORLEVEL% EQU 0 SET det_os=7
+
+ver | findstr /i "6\.2\." > nul
+IF %ERRORLEVEL% EQU 0 SET det_os=8
 
 IF %det_os%==unsupp (
 	GOTO UNSUPP
