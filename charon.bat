@@ -8,16 +8,16 @@ COLOR 0c
 
 ::Begin OS detection::
 ::Set default value. If OS is not found, then we don't support it!::
-SET det_os=unsupp
+SET det_os=0
 
 ver | findstr /i "5\.1\." > nul
 IF %ERRORLEVEL% EQU 0 (
-	SET det_os=xp
+	SET det_os=5
 	GOTO TOOLBOX
 )
 
 ver | findstr /i "6\.0\." > nul
-IF %ERRORLEVEL% EQU 0 SET det_os=vista
+IF %ERRORLEVEL% EQU 0 SET det_os=6
 
 ver | findstr /i "6\.1\." > nul
 IF %ERRORLEVEL% EQU 0 SET det_os=7
@@ -76,7 +76,7 @@ ECHO.
 ECHO 1. CD/DVD Drive registry fixer
 ECHO 2. Reset HP Recovery Media creation software (SFC)
 ECHO 3. Start Windows Secure File Checker
-ECHO 4. Create the SFC log for Vista and 7
+ECHO 4. Create the SFC log for Vista, 7, and 8
 ECHO 5. Mass DLL register/unregister
 ECHO 6. UNHIDE
 ECHO 7. Quit
@@ -166,14 +166,14 @@ IF %menu_option%==1 ECHO Running...
 IF %menu_option%==2 GOTO TOOLBOX
 IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
 
-IF %det_os%==xp START sfc.exe /scannow
-IF NOT %det_os%==xp START sfc /scannow
+IF %det_os%==5 START sfc.exe /scannow
+IF NOT %det_os%==5 START sfc /scannow
 GOTO TOOLBOX
 
 :SFC_LOG
 ::Retrieve the SFC log in Vista and 7::
 CLS
-ECHO This will retrieve the SFC log for Windows Vista and Windows 7 and
+ECHO This will retrieve the SFC log for Windows Vista, 7, and 8 then
 ECHO place it in a text file on the current user's desktop. This log is
 ECHO useful for reviewing files that were repaired or not repairable.
 ECHO NOTE: Does not work in XP. Your SFC log is in your Event Viewer.
@@ -188,7 +188,7 @@ IF %menu_option%==1 ECHO Running...
 IF %menu_option%==2 GOTO TOOLBOX
 IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
 
-IF %det_os%==xp GOTO TOOLBOX
+IF %det_os%==5 GOTO TOOLBOX
 FINDSTR /c:"[SR]" %windir%\Logs\CBS\CBS.log >%userprofile%\Desktop\sfcdetails.txt
 GOTO TOOLBOX
 
