@@ -232,12 +232,18 @@ GOTO TOOLBOX
 CLS
 ECHO TODO.
 ECHO Mass file unhide script to be implimented here.
-ECHO Depricated for now, not stable.
+ECHO Not stable.
 ECHO.
 PAUSE
 ::Intended to unhide all files on a hard drive. Useful to clean up after some nasty viruses.
-ECHO NOT Running, please wait. This will take some time.
-::ATTRIB C:\* /d /s -h -s
+ECHO Running, please wait. This will take some time.
+ATTRIB %UserProfile%\Desktop\* /d /s -h -s
+ATTRIB %UserProfile%\My Documents\* /d /s -h -s
+ATTRIB %UserProfile%\Favorites\* /d /s -h -s
+IF NOT %det_os%==5 ATTRIB %UserProfile%\My Music\* /d /s -h -s
+IF NOT %det_os%==5 ATTRIB %UserProfile%\My Pictures\* /d /s -h -s
+IF NOT %det_os%==5 ATTRIB %UserProfile%\My Videos\* /d /s -h -s
+IF NOT %det_os%==5 ATTRIB %UserProfile%\Contacts\* /d /s -h -s
 ECHO Complete.
 PAUSE
 GOTO TOOLBOX
