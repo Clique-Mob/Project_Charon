@@ -74,11 +74,11 @@ ECHO ---------------------------------------------------------------------------
 ECHO.
 ECHO.
 ECHO 1. CD/DVD Drive registry fixer
-ECHO 2. Reset HP Recovery Media creation software (SFC)
-ECHO 3. Start Windows Secure File Checker
+ECHO 2. Reset HP Recovery Media creation software
+ECHO 3. Start Windows Secure File Checker (SFC)
 ECHO 4. Create the SFC log for Vista, 7, and 8
 ECHO 5. Mass DLL register/unregister
-ECHO 6. UNHIDE
+ECHO 6. Unhide all User files
 ECHO 7. Quit
 ECHO.
 SET menu_option=""
@@ -224,26 +224,37 @@ PAUSE
 GOTO TOOLBOX
 
 :UNHIDE
-::Staging
-::Appears to have an issue accessing various Windows and Program Files folders. Usually the virus
-::that hides the user's files only target the actual native user folders. Perhaps make this targetable,
-::and/or smart-targetting only current user. Would also save processing time. Even better would be to identify
-::if the virus only targets completely native folders, or ALL folders in the user file.
+::Mass Unhider for User files::
 CLS
-ECHO TODO.
-ECHO Mass file unhide script to be implimented here.
-ECHO Not stable.
+ECHO IN DEVELOPMENT
+ECHO This tool will unhide all files in typical user folders. Useful in
+ECHO cleaning up after some viruses that hide your files.
+ECHO Not tested.
 ECHO.
-PAUSE
-::Intended to unhide all files on a hard drive. Useful to clean up after some nasty viruses.
-ECHO Running, please wait. This will take some time.
+ECHO Do you want to run this tool?
+ECHO 1. Yes
+ECHO 2. No
+ECHO.
+SET menu_option=""
+SET /p menu_option= Select an option: 
+IF %menu_option%==1 ECHO Running...
+IF %menu_option%==2 GOTO TOOLBOX
+IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
+ECHO Please wait. This may take some time.
 ATTRIB %UserProfile%\Desktop\* /d /s -h -s
+ATTRIB %UserProfile%\Desktop\desktop.ini /d /s +h +s +a
 ATTRIB %UserProfile%\My Documents\* /d /s -h -s
+ATTRIB %UserProfile%\My Documents\desktop.ini /d /s +h +s +a
 ATTRIB %UserProfile%\Favorites\* /d /s -h -s
+ATTRIB %UserProfile%\Favorites\desktop.ini /d /s +h +s +a
 IF NOT %det_os%==5 ATTRIB %UserProfile%\My Music\* /d /s -h -s
+IF NOT %det_os%==5 ATTRIB %UserProfile%\My Music\desktop.ini /d /s +h +s +a
 IF NOT %det_os%==5 ATTRIB %UserProfile%\My Pictures\* /d /s -h -s
+IF NOT %det_os%==5 ATTRIB %UserProfile%\My Pictures\desktop.ini /d /s +h +s +a
 IF NOT %det_os%==5 ATTRIB %UserProfile%\My Videos\* /d /s -h -s
+IF NOT %det_os%==5 ATTRIB %UserProfile%\My Videos\desktop.ini /d /s +h +s +a
 IF NOT %det_os%==5 ATTRIB %UserProfile%\Contacts\* /d /s -h -s
+IF NOT %det_os%==5 ATTRIB %UserProfile%\Contacts\desktop.ini /d /s +h +s +a
 ECHO Complete.
 PAUSE
 GOTO TOOLBOX
