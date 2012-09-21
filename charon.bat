@@ -36,7 +36,7 @@ IF %det_os%==unsupp (
 ECHO OS Unsupported. The tools will not run for your safety.
 ECHO If you believe this is wrong, or know that these tools are
 ECHO safe in your OS, please create an issue report at:
-ECHO https://github.com/need2/Project_Charon
+ECHO https://github.com/clique-mob/Project_Charon
 PAUSE
 GOTO :EOF
 
@@ -79,7 +79,8 @@ ECHO 3. Start Windows Secure File Checker (SFC)
 ECHO 4. Create the SFC log for Vista, 7, and 8
 ECHO 5. Mass DLL register/unregister
 ECHO 6. Unhide all User files
-ECHO 7. Quit
+ECHO 7. Reset .DLL and/or .EXE handling
+ECHO 8. Quit
 ECHO.
 SET menu_option=""
 SET /p menu_option= Please select an option: 
@@ -89,7 +90,8 @@ IF %menu_option%==3 GOTO SFC
 IF %menu_option%==4 GOTO SFC_LOG
 IF %menu_option%==5 GOTO DLL
 IF %menu_option%==6 GOTO UNHIDE
-IF %menu_option%==7 GOTO EOF
+IF %menu_option%==7 GOTO HANDLER
+IF %menu_option%==8 GOTO EOF
 ECHO Not a valid option, please choose again.
 GOTO TOOLBOX
 
@@ -240,6 +242,7 @@ SET /p menu_option= Select an option:
 IF %menu_option%==1 ECHO Running...
 IF %menu_option%==2 GOTO TOOLBOX
 IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
+
 ECHO Please wait. This may take some time.
 ATTRIB %UserProfile%\Desktop\* /d /s -h -s
 ATTRIB %UserProfile%\Desktop\desktop.ini /d /s +h +s +a
@@ -259,5 +262,41 @@ ECHO Complete.
 PAUSE
 GOTO TOOLBOX
 
+:HANDLER
+::Tool for resetting DLL and/or EXE handling::
+CLS
+ECHO IN DEVELOPMENT DO NOT USE
+ECHO This tool will reset the way that Windows handles .DLL and/or
+ECHO .EXE files, resolving issues where you get errors trying to
+ECHO launch programs or services.
+ECHO Not tested.
+ECHO.
+ECHO Do you want to run this tool?
+ECHO 1. Yes
+ECHO 2. No
+ECHO.
+SET menu_option=""
+SET /p menu_option= Select an option: 
+IF %menu_option%==1 ECHO Running...
+IF %menu_option%==2 GOTO TOOLBOX
+IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
+
+:HANDA
+SET menu_option=""
+ECHO Reset .DLL handling(d), .EXE handling(e), or both(b)?
+ECHO /p menu_option= Please select (d, e, or b):
+IF NOT %menu_option%==d IF NOT %menu_option%==e IF NOT %menu_option%==b GOTO HANDA
+
+IF NOT %menu_option%==e REG DELETE HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.dll\UserChoice
+IF NOT %menu_option%==e GOTO HANDB
+REG DELETE HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithList
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithProgids
+
+:HANDB
+ECHO Complete.
+PAUSE
+GOTO TOOLBOX
 :EOF
 EXIT

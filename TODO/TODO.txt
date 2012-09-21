@@ -1,7 +1,7 @@
 To do:
 Add the existing BAT files to Charon.bat
 Think of ways to impliment the non bat files
+Scalable networking reset tool
 Streamline Charon
 Investigate other manufacturers' recovery software and find ways to reset their media creation
-Complete support for Windows 8
 GUI - Will require a complete rebase into a different language obviously
