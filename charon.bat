@@ -69,6 +69,7 @@ CD /D "%~dp0"
 CLS
 ECHO Welcome to the Charon Windows Multitool.
 ECHO The following are tools for fixing various issues that can arise in Windows.
+ECHO Please report issues to https://github.com/Clique-Mob/Project_Charon/issues
 ECHO WARNING: I am not responsible for you breaking anything with this tool.
 ECHO ----------------------------------------------------------------------------
 ECHO.
@@ -79,8 +80,8 @@ ECHO 3. Start Windows Secure File Checker (SFC)
 ECHO 4. Create the SFC log for Vista, 7, and 8
 ECHO 5. Mass DLL register/unregister
 ECHO 6. Unhide all User files
-ECHO 7. Reset .DLL and/or .EXE handling
-ECHO 8. Quit
+::ECHO 7. Reset .DLL and/or .EXE handling
+ECHO 7. Quit
 ECHO.
 SET menu_option=""
 SET /p menu_option= Please select an option: 
@@ -90,8 +91,8 @@ IF %menu_option%==3 GOTO SFC
 IF %menu_option%==4 GOTO SFC_LOG
 IF %menu_option%==5 GOTO DLL
 IF %menu_option%==6 GOTO UNHIDE
-IF %menu_option%==7 GOTO HANDLER
-IF %menu_option%==8 GOTO EOF
+::IF %menu_option%==7 GOTO HANDLER
+IF %menu_option%==7 GOTO EOF
 ECHO Not a valid option, please choose again.
 GOTO TOOLBOX
 
@@ -298,5 +299,6 @@ REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Fil
 ECHO Complete.
 PAUSE
 GOTO TOOLBOX
+
 :EOF
 EXIT
