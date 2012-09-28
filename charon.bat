@@ -229,10 +229,8 @@ GOTO TOOLBOX
 :UNHIDE
 ::Mass Unhider for User files::
 CLS
-ECHO IN DEVELOPMENT
-ECHO This tool will unhide all files in typical user folders. Useful in
+ECHO This tool will unhide all files in typical User folders. Useful in
 ECHO cleaning up after some viruses that hide your files.
-ECHO Not tested.
 ECHO.
 ECHO Do you want to run this tool?
 ECHO 1. Yes
@@ -244,6 +242,7 @@ IF %menu_option%==1 ECHO Running...
 IF %menu_option%==2 GOTO TOOLBOX
 IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
 
+CLS
 ECHO Please wait. This may take some time.
 ATTRIB %UserProfile%\Desktop\* /d /s -h -s
 ATTRIB %UserProfile%\Desktop\desktop.ini /d /s +h +s +a
