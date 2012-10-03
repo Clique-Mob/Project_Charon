@@ -1,24 +1,24 @@
 @ECHO OFF
-TITLE Charon v0.5.4
+TITLE Charon v0.5.7
 COLOR 0c
 ::Created by the GCM team::
 ::Lane Garland (aka need2)::
 ::Samuel Brisby (aka spamuel42)::
 ::Tom B (aka r3l0ad)::
-::Revision 0.5.3::
+::Revision 0.5.7::
 
 ::Begin OS detection::
 ::Set default value. If OS is not found, then we don't support it!::
-SET det_os=unsupp
+SET det_os=0
 
 ver | findstr /i "5\.1\." > nul
 IF %ERRORLEVEL% EQU 0 (
-	SET det_os=xp
+	SET det_os=5
 	GOTO TOOLBOX
 )
 
 ver | findstr /i "6\.0\." > nul
-IF %ERRORLEVEL% EQU 0 SET det_os=vista
+IF %ERRORLEVEL% EQU 0 SET det_os=6
 
 ver | findstr /i "6\.1\." > nul
 IF %ERRORLEVEL% EQU 0 SET det_os=7
@@ -37,7 +37,7 @@ IF %det_os%==unsupp (
 ECHO OS Unsupported. The tools will not run for your safety.
 ECHO If you believe this is wrong, or know that these tools are
 ECHO safe in your OS, please create an issue report at:
-ECHO https://github.com/need2/Project_Charon
+ECHO https://github.com/clique-mob/Project_Charon
 PAUSE
 GOTO :EOF
 
@@ -70,6 +70,7 @@ CD /D "%~dp0"
 CLS
 ECHO Welcome to the Charon Windows Multitool.
 ECHO The following are tools for fixing various issues that can arise in Windows.
+ECHO Please report issues to https://github.com/Clique-Mob/Project_Charon/issues
 ECHO WARNING: I am not responsible for you breaking anything with this tool.
 ECHO ----------------------------------------------------------------------------
 ECHO.
@@ -77,9 +78,11 @@ ECHO.
 ECHO 1. CD/DVD Drive registry fixer
 ECHO 2. Reset HP Recovery Media creation software
 ECHO 3. Start Windows Secure File Checker (SFC)
-ECHO 4. Create the SFC log for Vista and 7
+ECHO 4. Create the SFC log for Vista, 7, and 8
 ECHO 5. Mass DLL register/unregister
-ECHO 6. Quit
+ECHO 6. Unhide all User files
+::ECHO 7. Reset .DLL and/or .EXE handling
+ECHO 7. Quit
 ECHO.
 SET menu_option=""
 SET /p menu_option= Please select an option: 
@@ -88,7 +91,9 @@ IF %menu_option%==2 GOTO HP_MEDIA
 IF %menu_option%==3 GOTO SFC
 IF %menu_option%==4 GOTO SFC_LOG
 IF %menu_option%==5 GOTO DLL
-IF %menu_option%==6 GOTO EOF
+IF %menu_option%==6 GOTO UNHIDE
+::IF %menu_option%==7 GOTO HANDLER
+IF %menu_option%==7 GOTO EOF
 ECHO Not a valid option, please choose again.
 GOTO TOOLBOX
 
@@ -165,14 +170,14 @@ IF %menu_option%==1 ECHO Running...
 IF %menu_option%==2 GOTO TOOLBOX
 IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
 
-IF %det_os%==xp START sfc.exe /scannow
-IF NOT %det_os%==xp START sfc /scannow
+IF %det_os%==5 START sfc.exe /scannow
+IF NOT %det_os%==5 START sfc /scannow
 GOTO TOOLBOX
 
 :SFC_LOG
 ::Retrieve the SFC log in Vista and 7::
 CLS
-ECHO This will retrieve the SFC log for Windows Vista and Windows 7 and
+ECHO This will retrieve the SFC log for Windows Vista, 7, and 8 then
 ECHO place it in a text file on the current user's desktop. This log is
 ECHO useful for reviewing files that were repaired or not repairable.
 ECHO NOTE: Does not work in XP. Your SFC log is in your Event Viewer.
@@ -187,7 +192,7 @@ IF %menu_option%==1 ECHO Running...
 IF %menu_option%==2 GOTO TOOLBOX
 IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
 
-IF %det_os%==xp GOTO TOOLBOX
+IF %det_os%==5 GOTO TOOLBOX
 FINDSTR /c:"[SR]" %windir%\Logs\CBS\CBS.log >%userprofile%\Desktop\sfcdetails.txt
 GOTO TOOLBOX
 
@@ -219,6 +224,79 @@ IF NOT %state%==u IF NOT %state%==r GOTO DLL_MENU_B
 
 IF %state%==r FOR %%i in (%target%\*.dll) do regsvr32 %%i
 IF %state%==u FOR %%i in (%target%\*.dll) do regsvr32 /u %%i
+PAUSE
+GOTO TOOLBOX
+
+:UNHIDE
+::Mass Unhider for User files::
+CLS
+ECHO This tool will unhide all files in typical User folders. Useful in
+ECHO cleaning up after some viruses that hide your files.
+ECHO.
+ECHO Do you want to run this tool?
+ECHO 1. Yes
+ECHO 2. No
+ECHO.
+SET menu_option=""
+SET /p menu_option= Select an option: 
+IF %menu_option%==1 ECHO Running...
+IF %menu_option%==2 GOTO TOOLBOX
+IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
+
+CLS
+ECHO Please wait. This may take some time.
+ATTRIB %UserProfile%\Desktop\* /d /s -h -s
+ATTRIB %UserProfile%\Desktop\desktop.ini /d /s +h +s +a
+ATTRIB %UserProfile%\My Documents\* /d /s -h -s
+ATTRIB %UserProfile%\My Documents\desktop.ini /d /s +h +s +a
+ATTRIB %UserProfile%\Favorites\* /d /s -h -s
+ATTRIB %UserProfile%\Favorites\desktop.ini /d /s +h +s +a
+IF NOT %det_os%==5 ATTRIB %UserProfile%\My Music\* /d /s -h -s
+IF NOT %det_os%==5 ATTRIB %UserProfile%\My Music\desktop.ini /d /s +h +s +a
+IF NOT %det_os%==5 ATTRIB %UserProfile%\My Pictures\* /d /s -h -s
+IF NOT %det_os%==5 ATTRIB %UserProfile%\My Pictures\desktop.ini /d /s +h +s +a
+IF NOT %det_os%==5 ATTRIB %UserProfile%\My Videos\* /d /s -h -s
+IF NOT %det_os%==5 ATTRIB %UserProfile%\My Videos\desktop.ini /d /s +h +s +a
+IF NOT %det_os%==5 ATTRIB %UserProfile%\Contacts\* /d /s -h -s
+IF NOT %det_os%==5 ATTRIB %UserProfile%\Contacts\desktop.ini /d /s +h +s +a
+ECHO Complete.
+PAUSE
+GOTO TOOLBOX
+
+:HANDLER
+::Tool for resetting DLL and/or EXE handling::
+CLS
+ECHO IN DEVELOPMENT DO NOT USE
+ECHO This tool will reset the way that Windows handles .DLL and/or
+ECHO .EXE files, resolving issues where you get errors trying to
+ECHO launch programs or services.
+ECHO Not tested.
+ECHO.
+ECHO Do you want to run this tool?
+ECHO 1. Yes
+ECHO 2. No
+ECHO.
+SET menu_option=""
+SET /p menu_option= Select an option: 
+IF %menu_option%==1 ECHO Running...
+IF %menu_option%==2 GOTO TOOLBOX
+IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
+
+:HANDA
+SET menu_option=""
+ECHO Reset .DLL handling(d), .EXE handling(e), or both(b)?
+ECHO /p menu_option= Please select (d, e, or b):
+IF NOT %menu_option%==d IF NOT %menu_option%==e IF NOT %menu_option%==b GOTO HANDA
+
+IF NOT %menu_option%==e REG DELETE HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.dll\UserChoice
+IF NOT %menu_option%==e GOTO HANDB
+REG DELETE HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithList
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithProgids
+
+:HANDB
+ECHO Complete.
 PAUSE
 GOTO TOOLBOX
 
