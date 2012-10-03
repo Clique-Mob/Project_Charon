@@ -3,6 +3,7 @@ TITLE Charon v0.5.7
 COLOR 0c
 ::Created by the GCM team::
 ::Lane Garland (aka need2)::
+::Samuel Brisby (aka spamuel42)::
 ::Tom B (aka r3l0ad)::
 ::Revision 0.5.7::
 
