@@ -81,6 +81,7 @@ ECHO 3. Start Windows Secure File Checker (SFC)
 ECHO 4. Create the SFC log for Vista, 7, and 8
 ECHO 5. Mass DLL register/unregister
 ECHO 6. Unhide all User files
+::ECHO 7. Fix opening web page links in other programs (ie. Outlook)
 ::ECHO 7. Reset .DLL and/or .EXE handling
 ECHO 7. Quit
 ECHO.
@@ -92,6 +93,7 @@ IF %menu_option%==3 GOTO SFC
 IF %menu_option%==4 GOTO SFC_LOG
 IF %menu_option%==5 GOTO DLL
 IF %menu_option%==6 GOTO UNHIDE
+::IF %menu_option%==7 GOTO WEBLNK
 ::IF %menu_option%==7 GOTO HANDLER
 IF %menu_option%==7 GOTO EOF
 ECHO Not a valid option, please choose again.
@@ -102,7 +104,6 @@ GOTO TOOLBOX
 CLS
 ECHO This tool will remove the registry keys responsible for causing Windows
 ECHO to fail to load the drivers for CD and DVD drives. No side effects known.
-ECHO Restart or disable then enable the drive to see the results.
 ECHO.
 ECHO Do you want to run this tool?
 ECHO 1. Yes
@@ -116,6 +117,9 @@ IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
 
 REG DELETE HKLM\SYSTEM\CurrentControlSet\Control\Class\{4D36E965-E325-11CE-BFC1-08002BE10318} /v UpperFilters /f
 REG DELETE HKLM\SYSTEM\CurrentControlSet\Control\Class\{4D36E965-E325-11CE-BFC1-08002BE10318} /v LowerFilters /f
+
+ECHO Complete. Please restart the computer or Disable/Enable the drive in Device
+ECHO Manager to finish the fix.
 PAUSE
 GOTO TOOLBOX
 
@@ -145,6 +149,7 @@ IF EXIST D:\HPCD.SYS MOVE D:\HPCD.SYS C:\recovery_temp
 IF EXIST C:\Windows\SMINST\HPCD.SYS MOVE C:\Windows\SMINST\HPCD.SYS C:\recovery_temp
 IF EXIST C:\ProgramData\Hewlett-Packard\Recovery\hpdrcu.prc MOVE C:\ProgramData\Hewlett-Packard\Recovery\hpdrcu.prc C:\recovery_temp
 IF EXIST D:\hpdrcu.prc MOVE D:\hpdrcu.prc C:\recovery_temp
+
 ECHO Files moved... you can delete C:\recovery_temp if you don't want
 ECHO backups of removed files.
 PAUSE
@@ -297,6 +302,38 @@ REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Fil
 
 :HANDB
 ECHO Complete.
+PAUSE
+GOTO TOOLBOX
+
+:WEBLNK
+::Tool for resetting web page link handling. For issues with opening links from other programs::
+::such as Outlook.::
+CLS
+ECHO IN DEVELOPMENT DO NOT USE
+ECHO This tool will fix the way Windows handles wep page links
+ECHO in non-broswer programs, fixing errors when clicking web
+ECHO links. This issue seems to start most commonly from removing
+ECHO Google Chrome, but could occur after removing any browser.
+ECHO Example: Will fix errors when clicking a web link in Outlook.
+ECHO Not tested.
+ECHO.
+ECHO Do you want to run this tool?
+ECHO 1. Yes
+ECHO 2. No
+ECHO.
+SET menu_option=""
+SET /p menu_option= Select an option: 
+IF %menu_option%==1 ECHO Running...
+IF %menu_option%==2 GOTO TOOLBOX
+IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
+
+REG ADD HKEY_CURRENT_USER\Software\Classes\.htm /ve /d htmlfile /f 
+REG ADD HKEY_CURRENT_USER\Software\Classes\.html /ve /d htmlfile /f 
+REG ADD HKEY_CURRENT_USER\Software\Classes\.shtml /ve /d htmlfile /f 
+REG ADD HKEY_CURRENT_USER\Software\Classes\.xht /ve /d htmlfile /f 
+REG ADD HKEY_CURRENT_USER\Software\Classes\.xhtml /ve /d htmlfile /f
+
+ECHO Complete. Please restart the computer to finish the fix.
 PAUSE
 GOTO TOOLBOX
 
