@@ -35,7 +35,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
     wincl.lpszMenuName = MAKEINTRESOURCE(IDR_MYMENU);
     wincl.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MYICON));
-    wincl.hIconSm = (HICON)LoadImage(GetModuleHandle(NULL), MAKINTRESOURCE(IDI_MYICON), IMAGE_ICON, 16, 16, 0);
+    wincl.hIconSm = (HICON)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MYICON), IMAGE_ICON, 16, 16, 0);
 
     /* Register the window class, and if it fails quit the program */
     if (!RegisterClassEx (&wincl))
@@ -89,6 +89,18 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             MessageBox (hwnd, szFileName, "This Program is:", MB_OK | MB_ICONINFORMATION);
         }
             break;
+
+        case WM_COMMAND:
+			switch(LOWORD(wParam))
+			{
+				case ID_FILE_EXIT:
+					PostMessage(hwnd, WM_CLOSE, 0, 0);
+				break;
+				case ID_LOGS_OPEN:
+					MessageBox(hwnd, "Not yet implimented.", "Open", MB_OK);
+				break;
+			}
+		break;
         case WM_CLOSE:
             DestroyWindow(hwnd);
             PostQuitMessage(0);

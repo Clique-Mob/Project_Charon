@@ -1,6 +1,10 @@
 # depslib dependency file v1.0
-1351200750 source:c:\users\lanegarland\documents\github\project_charon\project folder\charon\menu_one.rc
+1351546099 source:c:\users\lanegarland\documents\github\project_charon\project folder\charon\menu_one.rc
 	"resource.h"
 
-1351200716 c:\users\lanegarland\documents\github\project_charon\project folder\charon\resource.h
+1351616764 c:\users\lanegarland\documents\github\project_charon\project folder\charon\resource.h
+
+1351616764 source:c:\users\lanegarland\documents\github\project_charon\project folder\charon\main.cpp
+	<windows.h>
+	"resource.h"
 
