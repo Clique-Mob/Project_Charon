@@ -1,11 +1,11 @@
 @ECHO OFF
-TITLE Charon v0.5.7a
+TITLE Charon v0.5.8
 COLOR 0c
 ::Created by the GCM team::
 ::Lane Garland (aka need2)::
 ::Samuel Brisby (aka spamuel42)::
 ::Tom B (aka r3l0ad)::
-::Revision 0.5.7a::
+::Revision 0.5.8::
 
 ::Begin OS detection::
 ::Set default value. If OS is not found, then we don't support it!::
@@ -82,8 +82,9 @@ ECHO 4. Create the SFC log for Vista, 7, and 8
 ECHO 5. Mass DLL register/unregister
 ECHO 6. Unhide all User files
 ECHO 7. Fix opening web page links in other programs (ie. Outlook)
-::ECHO 7. Reset .DLL and/or .EXE handling
-ECHO 8. Quit
+::ECHO 8. Reset .DLL and/or .EXE handling
+ECHO 9. Remove Internet Explorer Flash in Windows 8
+ECHO 10. Quit
 ECHO.
 SET menu_option=""
 SET /p menu_option= Please select an option: 
@@ -94,8 +95,9 @@ IF %menu_option%==4 GOTO SFC_LOG
 IF %menu_option%==5 GOTO DLL
 IF %menu_option%==6 GOTO UNHIDE
 IF %menu_option%==7 GOTO WEBLNK
-::IF %menu_option%==7 GOTO HANDLER
-IF %menu_option%==8 GOTO EOF
+::IF %menu_option%==8 GOTO HANDLER
+IF %menu_option%==9 GOTO IEFLASH
+IF %menu_option%==10 GOTO EOF
 ECHO Not a valid option, please choose again.
 GOTO TOOLBOX
 
@@ -334,6 +336,48 @@ REG ADD HKEY_CURRENT_USER\Software\Classes\.xht /ve /d htmlfile /f
 REG ADD HKEY_CURRENT_USER\Software\Classes\.xhtml /ve /d htmlfile /f
 
 ECHO Complete. Please restart the computer to finish the fix.
+PAUSE
+GOTO TOOLBOX
+
+:IEFLASH
+::Tool for removing Internet Explorer Flash in Windows 8.::
+CLS
+ECHO This tool removes Flash for Internet Explorer in Windows 8.
+ECHO There is no normal uninstall method for IE Flash otherwise.
+ECHO This tool should NOT damage Flash for other browsers (ie. Firefox,
+ECHO Chrome, Opera). Future Windows Updates may re-add IE Flash, so
+ECHO you may have to rerun this after those updates if you want
+ECHO to keep IE Flash off of your machine.
+ECHO Not tested.
+ECHO.
+ECHO Do you want to run this tool?
+ECHO 1. Yes
+ECHO 2. No
+ECHO.
+SET menu_option=""
+SET /p menu_option= Select an option: 
+IF %menu_option%==1 ECHO Running...
+IF %menu_option%==2 GOTO TOOLBOX
+IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
+
+::Detect Windows 8. If not 8, do not run!::
+IF NOT %det_os%==8 ECHO WARNING: NOT Windows 8. Tool will not run.
+IF NOT %det_os%==8 GOTO TOOLBOX
+
+FOR %%i in (%WINDIR%\System32\Macromed\Flash\*.OCX) do regsvr32 /u "%%i"
+FOR %%i in (%WINDIR%\System32\Macromed\Flash\*.OCX) do DEL /f "%%i"
+IF EXIST %WINDIR%\System32\Macromed\Flash\*_ActiveX.dll regsvr32 /u %WINDIR%\System32\Macromed\Flash\*_ActiveX.dll
+IF EXIST %WINDIR%\System32\Macromed\Flash\*_ActiveX.dll DEL /f %WINDIR%\System32\Macromed\Flash\*_ActiveX.dll
+IF EXIST %WINDIR%\System32\Macromed\Flash\*_ActiveX.exe DEL /f %WINDIR%\System32\Macromed\Flash\*_ActiveX.exe
+IF NOT EXIST %WINDIR%\SysWow64 GOTO ENDFLASH
+FOR %%i in (%WINDIR%\SysWow64\Macromed\Flash\*.OCX) do regsvr32 /u "%%i"
+FOR %%i in (%WINDIR%\SysWow64\Macromed\Flash\*.OCX) do DEL /f "%%i"
+IF EXIST %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.dll regsvr32 /u %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.dll
+IF EXIST %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.dll DEL /f %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.dll
+IF EXIST %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.exe DEL /f %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.exe
+
+:ENDFLASH
+ECHO Complete. Please restart the computer to complete removal.
 PAUSE
 GOTO TOOLBOX
 
