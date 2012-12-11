@@ -1,11 +1,11 @@
 @ECHO OFF
-TITLE Charon v0.5.7
+TITLE Charon v0.5.7a
 COLOR 0c
 ::Created by the GCM team::
 ::Lane Garland (aka need2)::
 ::Samuel Brisby (aka spamuel42)::
 ::Tom B (aka r3l0ad)::
-::Revision 0.5.7::
+::Revision 0.5.7a::
 
 ::Begin OS detection::
 ::Set default value. If OS is not found, then we don't support it!::
@@ -220,15 +220,16 @@ IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
 
 :DLL_MENU_A
 SET /p target= Please enter the full path to the folder containing the .DLL files: 
-IF NOT EXIST %target% ECHO Location does not exist! Try again.
-IF NOT EXIST %target% GOTO DLL_MENU_A
+SET modtarget="%target%"
+IF NOT EXIST %modtarget% ECHO Location does not exist! Try again.
+IF NOT EXIST %modtarget% GOTO DLL_MENU_A
 :DLL_MENU_B
 SET /p state= Please either select (u)nregister or (r)egister: 
 IF NOT %state%==u IF NOT %state%==r ECHO Not an available option (%state%). Please select 'u' or 'r'.
 IF NOT %state%==u IF NOT %state%==r GOTO DLL_MENU_B
 
-IF %state%==r FOR %%i in (%target%\*.dll) do regsvr32 %%i
-IF %state%==u FOR %%i in (%target%\*.dll) do regsvr32 /u %%i
+IF %state%==r FOR %%i in (%modtarget%\*.dll) do regsvr32 "%%i"
+IF %state%==u FOR %%i in (%modtarget%\*.dll) do regsvr32 /u "%%i"
 PAUSE
 GOTO TOOLBOX
 
