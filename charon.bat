@@ -362,6 +362,7 @@ IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
 
 ::Detect Windows 8. If not 8, do not run!::
 IF NOT %det_os%==8 ECHO WARNING: NOT Windows 8. Tool will not run.
+IF NOT %det_os%==8 PAUSE
 IF NOT %det_os%==8 GOTO TOOLBOX
 
 FOR %%i in (%WINDIR%\System32\Macromed\Flash\*.OCX) do regsvr32 /u "%%i"
