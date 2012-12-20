@@ -1,5 +1,5 @@
 @ECHO OFF
-TITLE Charon v0.5.8
+TITLE Charon v0.6.0
 COLOR 0c
 ::Created by the GCM team::
 ::Lane Garland (aka need2)::
@@ -82,7 +82,7 @@ ECHO 4. Create the SFC log for Vista, 7, and 8
 ECHO 5. Mass DLL register/unregister
 ECHO 6. Unhide all User files
 ECHO 7. Fix opening web page links in other programs (ie. Outlook)
-::ECHO 8. Reset .DLL and/or .EXE handling
+ECHO 8. Reset .DLL and/or .EXE handling
 ECHO 9. Remove Internet Explorer Flash in Windows 8
 ECHO 10. Quit
 ECHO.
@@ -95,7 +95,7 @@ IF %menu_option%==4 GOTO SFC_LOG
 IF %menu_option%==5 GOTO DLL
 IF %menu_option%==6 GOTO UNHIDE
 IF %menu_option%==7 GOTO WEBLNK
-::IF %menu_option%==8 GOTO HANDLER
+IF %menu_option%==8 GOTO HANDLER
 IF %menu_option%==9 GOTO IEFLASH
 IF %menu_option%==10 GOTO EOF
 ECHO Not a valid option, please choose again.
@@ -146,7 +146,7 @@ MKDIR C:\recovery_temp
 IF EXIST D:\hp\CDCreatorLog MOVE D:\hp\CDCreatorLog\*.* C:\recovery_temp
 IF EXIST D:\RMCStatus.bin MOVE D:\RMCStatus.bin C:\recovery_temp
 IF EXIST C:\Windows\System32\Rebecca.dat MOVE C:\Windows\System32\Rebecca.dat C:\recovery_temp
-IF EXIST C:\Program Files (x86)\Hewlett-Packard\HP Recovery Manager\RMCStatus.bin MOVE C:\Program Files (x86)\Hewlett-Packard\HP Recovery Manager\RMCStatus.bin C:\recovery_temp
+IF EXIST "C:\Program Files (x86)\Hewlett-Packard\HP Recovery Manager\RMCStatus.bin" MOVE "C:\Program Files (x86)\Hewlett-Packard\HP Recovery Manager\RMCStatus.bin" C:\recovery_temp
 IF EXIST D:\HPCD.SYS MOVE D:\HPCD.SYS C:\recovery_temp
 IF EXIST C:\Windows\SMINST\HPCD.SYS MOVE C:\Windows\SMINST\HPCD.SYS C:\recovery_temp
 IF EXIST C:\ProgramData\Hewlett-Packard\Recovery\hpdrcu.prc MOVE C:\ProgramData\Hewlett-Packard\Recovery\hpdrcu.prc C:\recovery_temp
@@ -187,7 +187,8 @@ CLS
 ECHO This will retrieve the SFC log for Windows Vista, 7, and 8 then
 ECHO place it in a text file on the current user's desktop. This log is
 ECHO useful for reviewing files that were repaired or not repairable.
-ECHO NOTE: Does not work in XP. Your SFC log is in your Event Viewer.
+ECHO NOTE: XP stores it's SFC log in the Event Viewer in the System Events.
+ECHO For XP, this tool will launch the Event Viewer.
 ECHO.
 ECHO Do you want to run this tool?
 ECHO 1. Yes
@@ -199,8 +200,10 @@ IF %menu_option%==1 ECHO Running...
 IF %menu_option%==2 GOTO TOOLBOX
 IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
 
-IF %det_os%==5 GOTO TOOLBOX
-FINDSTR /c:"[SR]" %windir%\Logs\CBS\CBS.log >%userprofile%\Desktop\sfcdetails.txt
+IF %det_os%==5 (
+	START eventvwr.exe
+	GOTO TOOLBOX
+) ELSE ( FINDSTR /c:"[SR]" %windir%\Logs\CBS\CBS.log >%userprofile%\Desktop\sfcdetails.txt)
 GOTO TOOLBOX
 
 :DLL
@@ -227,8 +230,11 @@ IF NOT EXIST %modtarget% ECHO Location does not exist! Try again.
 IF NOT EXIST %modtarget% GOTO DLL_MENU_A
 :DLL_MENU_B
 SET /p state= Please either select (u)nregister or (r)egister: 
-IF NOT %state%==u IF NOT %state%==r ECHO Not an available option (%state%). Please select 'u' or 'r'.
-IF NOT %state%==u IF NOT %state%==r GOTO DLL_MENU_B
+IF NOT %state%==u (
+	IF NOT %state%==r (
+		ECHO Not an available option (%state%). Please select 'u' or 'r'.
+	)
+) ELSE ( GOTO DLL_MENU_B )
 
 IF %state%==r FOR %%i in (%modtarget%\*.dll) do regsvr32 "%%i"
 IF %state%==u FOR %%i in (%modtarget%\*.dll) do regsvr32 /u "%%i"
@@ -259,14 +265,16 @@ ATTRIB %UserProfile%\My Documents\* /d /s -h -s
 ATTRIB %UserProfile%\My Documents\desktop.ini /d /s +h +s +a
 ATTRIB %UserProfile%\Favorites\* /d /s -h -s
 ATTRIB %UserProfile%\Favorites\desktop.ini /d /s +h +s +a
-IF NOT %det_os%==5 ATTRIB %UserProfile%\My Music\* /d /s -h -s
-IF NOT %det_os%==5 ATTRIB %UserProfile%\My Music\desktop.ini /d /s +h +s +a
-IF NOT %det_os%==5 ATTRIB %UserProfile%\My Pictures\* /d /s -h -s
-IF NOT %det_os%==5 ATTRIB %UserProfile%\My Pictures\desktop.ini /d /s +h +s +a
-IF NOT %det_os%==5 ATTRIB %UserProfile%\My Videos\* /d /s -h -s
-IF NOT %det_os%==5 ATTRIB %UserProfile%\My Videos\desktop.ini /d /s +h +s +a
-IF NOT %det_os%==5 ATTRIB %UserProfile%\Contacts\* /d /s -h -s
-IF NOT %det_os%==5 ATTRIB %UserProfile%\Contacts\desktop.ini /d /s +h +s +a
+IF NOT %det_os%==5 (
+	ATTRIB %UserProfile%\My Music\* /d /s -h -s
+	ATTRIB %UserProfile%\My Music\desktop.ini /d /s +h +s +a
+	ATTRIB %UserProfile%\My Pictures\* /d /s -h -s
+	ATTRIB %UserProfile%\My Pictures\desktop.ini /d /s +h +s +a
+	ATTRIB %UserProfile%\My Videos\* /d /s -h -s
+	ATTRIB %UserProfile%\My Videos\desktop.ini /d /s +h +s +a
+	ATTRIB %UserProfile%\Contacts\* /d /s -h -s
+	ATTRIB %UserProfile%\Contacts\desktop.ini /d /s +h +s +a
+)
 ECHO Complete.
 PAUSE
 GOTO TOOLBOX
@@ -296,12 +304,14 @@ ECHO Reset .DLL handling(d), .EXE handling(e), or both(b)?
 ECHO /p menu_option= Please select (d, e, or b):
 IF NOT %menu_option%==d IF NOT %menu_option%==e IF NOT %menu_option%==b GOTO HANDA
 
-IF NOT %menu_option%==e REG DELETE HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.dll\UserChoice
-IF NOT %menu_option%==e GOTO HANDB
-REG DELETE HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithList
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithProgids
+IF NOT %menu_option%==e (
+	REG DELETE HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.dll\UserChoice
+) ELSE (
+	REG DELETE HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe
+	REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe
+	REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithList
+	REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithProgids
+)
 
 :HANDB
 ECHO Complete.
@@ -367,15 +377,20 @@ IF NOT %det_os%==8 GOTO TOOLBOX
 
 FOR %%i in (%WINDIR%\System32\Macromed\Flash\*.OCX) do regsvr32 /u "%%i"
 FOR %%i in (%WINDIR%\System32\Macromed\Flash\*.OCX) do DEL /f "%%i"
-IF EXIST %WINDIR%\System32\Macromed\Flash\*_ActiveX.dll regsvr32 /u %WINDIR%\System32\Macromed\Flash\*_ActiveX.dll
-IF EXIST %WINDIR%\System32\Macromed\Flash\*_ActiveX.dll DEL /f %WINDIR%\System32\Macromed\Flash\*_ActiveX.dll
+IF EXIST %WINDIR%\System32\Macromed\Flash\*_ActiveX.dll (
+	regsvr32 /u %WINDIR%\System32\Macromed\Flash\*_ActiveX.dll
+	DEL /f %WINDIR%\System32\Macromed\Flash\*_ActiveX.dll
+)
 IF EXIST %WINDIR%\System32\Macromed\Flash\*_ActiveX.exe DEL /f %WINDIR%\System32\Macromed\Flash\*_ActiveX.exe
 IF NOT EXIST %WINDIR%\SysWow64 GOTO ENDFLASH
 FOR %%i in (%WINDIR%\SysWow64\Macromed\Flash\*.OCX) do regsvr32 /u "%%i"
 FOR %%i in (%WINDIR%\SysWow64\Macromed\Flash\*.OCX) do DEL /f "%%i"
-IF EXIST %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.dll regsvr32 /u %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.dll
-IF EXIST %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.dll DEL /f %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.dll
-IF EXIST %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.exe DEL /f %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.exe
+IF EXIST %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.dll (
+	regsvr32 /u %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.dll
+	DEL /f %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.dll
+)
+IF EXIST %WINDIR%\SysWow64\Macromed\FLash\*_ActiveX.exe DEL /f %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.exe
+
 
 :ENDFLASH
 ECHO Complete. Please restart the computer to complete removal.
