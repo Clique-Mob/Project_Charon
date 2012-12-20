@@ -84,7 +84,8 @@ ECHO 6. Unhide all User files
 ECHO 7. Fix opening web page links in other programs (ie. Outlook)
 ECHO 8. Reset .DLL and/or .EXE handling
 ECHO 9. Remove Internet Explorer Flash in Windows 8
-ECHO 10. Quit
+ECHO 10. Prepare Windows for SATA mode switch.
+ECHO 11. Quit
 ECHO.
 SET menu_option=""
 SET /p menu_option= Please select an option: 
@@ -97,7 +98,8 @@ IF %menu_option%==6 GOTO UNHIDE
 IF %menu_option%==7 GOTO WEBLNK
 IF %menu_option%==8 GOTO HANDLER
 IF %menu_option%==9 GOTO IEFLASH
-IF %menu_option%==10 GOTO EOF
+IF %menu_option%==10 GOTO SATA
+IF %menu_option%==11 GOTO EOF
 ECHO Not a valid option, please choose again.
 GOTO TOOLBOX
 
@@ -396,6 +398,18 @@ IF EXIST %WINDIR%\SysWow64\Macromed\FLash\*_ActiveX.exe DEL /f %WINDIR%\SysWow64
 ECHO Complete. Please restart the computer to complete removal.
 PAUSE
 GOTO TOOLBOX
+
+:SATA
+ECHO DO NOT USE NOT IMPLIMENTED.
+PAUSE
+GOTO TOOLBOX
+
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\msahci
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\pciide
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\iaStorV
+\Storahci
+
+set Start to 0
 
 :EOF
 EXIT
