@@ -82,10 +82,10 @@ ECHO 4. Create the SFC log for Vista, 7, and 8
 ECHO 5. Mass DLL register/unregister
 ECHO 6. Unhide all User files
 ECHO 7. Fix opening web page links in other programs (ie. Outlook)
-ECHO 8. Reset .DLL and/or .EXE handling
-ECHO 9. Remove Internet Explorer Flash in Windows 8
-ECHO 10. Prepare Windows for SATA mode switch.
-ECHO 11. Quit
+::ECHO 8. Reset .DLL and/or .EXE handling
+ECHO 8. Remove Internet Explorer Flash in Windows 8
+ECHO 9. Prepare Windows for SATA mode switch.
+ECHO 10. Quit
 ECHO.
 SET menu_option=""
 SET /p menu_option= Please select an option: 
@@ -96,10 +96,10 @@ IF %menu_option%==4 GOTO SFC_LOG
 IF %menu_option%==5 GOTO DLL
 IF %menu_option%==6 GOTO UNHIDE
 IF %menu_option%==7 GOTO WEBLNK
-IF %menu_option%==8 GOTO HANDLER
-IF %menu_option%==9 GOTO IEFLASH
-IF %menu_option%==10 GOTO SATA
-IF %menu_option%==11 GOTO EOF
+::IF %menu_option%==8 GOTO HANDLER
+IF %menu_option%==8 GOTO IEFLASH
+IF %menu_option%==9 GOTO SATA
+IF %menu_option%==10 GOTO EOF
 ECHO Not a valid option, please choose again.
 GOTO TOOLBOX
 
@@ -307,12 +307,12 @@ ECHO /p menu_option= Please select (d, e, or b):
 IF NOT %menu_option%==d IF NOT %menu_option%==e IF NOT %menu_option%==b GOTO HANDA
 
 IF NOT %menu_option%==e (
-	REG DELETE HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.dll\UserChoice
+	REG DELETE HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.dll\UserChoice
 ) ELSE (
-	REG DELETE HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe
-	REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe
-	REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithList
-	REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithProgids
+	REG DELETE HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe
+	REG ADD HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe
+	REG ADD HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithList
+	REG ADD HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithProgids
 )
 
 :HANDB
@@ -341,11 +341,11 @@ IF %menu_option%==1 ECHO Running...
 IF %menu_option%==2 GOTO TOOLBOX
 IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
 
-REG ADD HKEY_CURRENT_USER\Software\Classes\.htm /ve /d htmlfile /f 
-REG ADD HKEY_CURRENT_USER\Software\Classes\.html /ve /d htmlfile /f 
-REG ADD HKEY_CURRENT_USER\Software\Classes\.shtml /ve /d htmlfile /f 
-REG ADD HKEY_CURRENT_USER\Software\Classes\.xht /ve /d htmlfile /f 
-REG ADD HKEY_CURRENT_USER\Software\Classes\.xhtml /ve /d htmlfile /f
+REG ADD HKCU\Software\Classes\.htm /ve /d htmlfile /f 
+REG ADD HKCU\Software\Classes\.html /ve /d htmlfile /f 
+REG ADD HKCU\Software\Classes\.shtml /ve /d htmlfile /f 
+REG ADD HKCU\Software\Classes\.xht /ve /d htmlfile /f 
+REG ADD HKCU\Software\Classes\.xhtml /ve /d htmlfile /f
 
 ECHO Complete. Please restart the computer to finish the fix.
 PAUSE
@@ -393,7 +393,6 @@ IF EXIST %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.dll (
 )
 IF EXIST %WINDIR%\SysWow64\Macromed\FLash\*_ActiveX.exe DEL /f %WINDIR%\SysWow64\Macromed\Flash\*_ActiveX.exe
 
-
 :ENDFLASH
 ECHO Complete. Please restart the computer to complete removal.
 PAUSE
@@ -426,21 +425,21 @@ IF %menu_option%==1 ECHO Running...
 IF %menu_option%==2 GOTO TOOLBOX
 IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
 
-set temp_var=0
-REG QUERY HKLM\SYSTEM\CurrentControlSet\services\msahci /v Start || SET temp_var=1
-IF %temp_var%==0 REG ADD "HKLM\SYSTEM\CurrentControlSet\services\msahci" /v Start /t reg_dword /d 0 /f
+set reg_det=0
+REG QUERY HKLM\SYSTEM\CurrentControlSet\services\msahci /v Start || SET reg_det=1
+IF %reg_det%==0 REG ADD "HKLM\SYSTEM\CurrentControlSet\services\msahci" /v Start /t reg_dword /d 0 /f
 
-set temp_var=0
-REG QUERY HKLM\SYSTEM\CurrentControlSet\services\pciide /v Start || SET temp_var=1
-IF %temp_var%==0 REG ADD "HKLM\SYSTEM\CurrentControlSet\services\pciide" /v Start /t reg_dword /d 0 /f
+set reg_det=0
+REG QUERY HKLM\SYSTEM\CurrentControlSet\services\pciide /v Start || SET reg_det=1
+IF %reg_det%==0 REG ADD "HKLM\SYSTEM\CurrentControlSet\services\pciide" /v Start /t reg_dword /d 0 /f
 
-set temp_var=0
-REG QUERY HKLM\SYSTEM\CurrentControlSet\services\iaStorV /v Start || SET temp_var=1
-IF %temp_var%==0 REG ADD "HKLM\SYSTEM\CurrentControlSet\services\iaStorV" /v Start /t reg_dword /d 0 /f
+set reg_det=0
+REG QUERY HKLM\SYSTEM\CurrentControlSet\services\iaStorV /v Start || SET reg_det=1
+IF %reg_det%==0 REG ADD "HKLM\SYSTEM\CurrentControlSet\services\iaStorV" /v Start /t reg_dword /d 0 /f
 
-set temp_var=0
-REG QUERY HKLM\SYSTEM\CurrentControlSet\services\Storahci /v Start || SET temp_var=1
-IF %temp_var%==0 REG ADD "HKLM\SYSTEM\CurrentControlSet\services\Storahci" /v Start /t reg_dword /d 0 /f
+set reg_det=0
+REG QUERY HKLM\SYSTEM\CurrentControlSet\services\Storahci /v Start || SET reg_det=1
+IF %reg_det%==0 REG ADD "HKLM\SYSTEM\CurrentControlSet\services\Storahci" /v Start /t reg_dword /d 0 /f
 
 ECHO.
 ECHO Complete. It is now safe to reboot into the BIOS and
