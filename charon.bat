@@ -403,11 +403,10 @@ GOTO TOOLBOX
 ECHO DO NOT USE NOT IMPLIMENTED.
 PAUSE
 GOTO TOOLBOX
-
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\msahci
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\pciide
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\iaStorV
-\Storahci
+IF EXIST HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\msahci REG HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\msahci DO SOMETHING
+IF EXIST HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\pciide REG HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\pciide DO SOMETHING
+IF EXIST HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\iaStorV REG HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\iaStorV DO SOMETHING
+IF EXIST HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\Storahci REG HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\Storahci DO SOMETHING
 
 set Start to 0
 
