@@ -399,9 +399,10 @@ ECHO Complete. Please restart the computer to complete removal.
 PAUSE
 GOTO TOOLBOX
 
+:SATA
 ::Tool to reset what driver Windows loads for a SATA type drive. Forces Windows::
 ::to redetect best driver on reboot.::
-:SATA
+CLS
 ECHO This tool is for allowing you to change what mode your SATA
 ECHO controller is in. For example, your system is running SATA in
 ECHO IDE mode (slow), and you want AHCI (fast) or RAID. Running this
@@ -425,28 +426,26 @@ IF %menu_option%==1 ECHO Running...
 IF %menu_option%==2 GOTO TOOLBOX
 IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
 
-IF EXIST HKLM\SYSTEM\CurrentControlSet\services\msahci REG ADD HKLM\SYSTEM\CurrentControlSet\services\msahci /v Start /t reg_dword /d 0
-::DEBUG::
-%errorlevel%
-PAUSE
+set temp_var=0
+REG QUERY HKLM\SYSTEM\CurrentControlSet\services\msahci /v Start || SET temp_var=1
+IF %temp_var%==0 REG ADD "HKLM\SYSTEM\CurrentControlSet\services\msahci" /v Start /t reg_dword /d 0 /f
 
-IF EXIST HKLM\SYSTEM\CurrentControlSet\services\pciide REG ADD HKLM\SYSTEM\CurrentControlSet\services\pciide /v Start /t reg_dword /d 0
-::DEBUG::
-%errorlevel%
-PAUSE
+set temp_var=0
+REG QUERY HKLM\SYSTEM\CurrentControlSet\services\pciide /v Start || SET temp_var=1
+IF %temp_var%==0 REG ADD "HKLM\SYSTEM\CurrentControlSet\services\pciide" /v Start /t reg_dword /d 0 /f
 
-IF EXIST HKLM\SYSTEM\CurrentControlSet\services\iaStorV REG ADD HKLM\SYSTEM\CurrentControlSet\services\iaStorV /v Start /t reg_dword /d 0
-::DEBUG::
-%errorlevel%
-PAUSE
+set temp_var=0
+REG QUERY HKLM\SYSTEM\CurrentControlSet\services\iaStorV /v Start || SET temp_var=1
+IF %temp_var%==0 REG ADD "HKLM\SYSTEM\CurrentControlSet\services\iaStorV" /v Start /t reg_dword /d 0 /f
 
-IF EXIST HKLM\SYSTEM\CurrentControlSet\services\Storahci REG ADD HKLM\SYSTEM\CurrentControlSet\services\Storahci /v Start /t reg_dword /d 0
-::DEBUG::
-%errorlevel%
-PAUSE
+set temp_var=0
+REG QUERY HKLM\SYSTEM\CurrentControlSet\services\Storahci /v Start || SET temp_var=1
+IF %temp_var%==0 REG ADD "HKLM\SYSTEM\CurrentControlSet\services\Storahci" /v Start /t reg_dword /d 0 /f
 
+ECHO.
 ECHO Complete. It is now safe to reboot into the BIOS and
-ECHO change your SATA controller's mode.
+ECHO change your SATA controller's mode. Any "ERROR"s displayed
+ECHO above are ok so long as at least two above operations completed.
 PAUSE
 GOTO TOOLBOX
 
