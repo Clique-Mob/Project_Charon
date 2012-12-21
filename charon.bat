@@ -399,16 +399,56 @@ ECHO Complete. Please restart the computer to complete removal.
 PAUSE
 GOTO TOOLBOX
 
+::Tool to reset what driver Windows loads for a SATA type drive. Forces Windows::
+::to redetect best driver on reboot.::
 :SATA
-ECHO DO NOT USE NOT IMPLIMENTED.
+ECHO This tool is for allowing you to change what mode your SATA
+ECHO controller is in. For example, your system is running SATA in
+ECHO IDE mode (slow), and you want AHCI (fast) or RAID. Running this
+ECHO before restarting and changing the BIOS setting will prevent
+ECHO Windows from crashing by telling Windows to redetect what type
+ECHO of drive the OS is running on. First restart will be somewhat
+ECHO slow, and one more restart will be required after successful
+ECHO booting in the new SATA mode. This must be run EVERY time you
+ECHO want to change SATA modes in the BIOS. Known to work in Vista
+ECHO 7, and 8.
+ECHO WARNING: MODIFICATIONS NOT TESTED IN XP.
+ECHO Tool not tested.
+ECHO.
+ECHO Do you want to run this tool?
+ECHO 1. Yes
+ECHO 2. No
+ECHO.
+SET menu_option=""
+SET /p menu_option= Select an option: 
+IF %menu_option%==1 ECHO Running...
+IF %menu_option%==2 GOTO TOOLBOX
+IF NOT %menu_option%==1 IF NOT %menu_option%==2 GOTO TOOLBOX
+
+IF EXIST HKLM\SYSTEM\CurrentControlSet\services\msahci REG ADD HKLM\SYSTEM\CurrentControlSet\services\msahci /v Start /t reg_dword /d 0
+::DEBUG::
+%errorlevel%
+PAUSE
+
+IF EXIST HKLM\SYSTEM\CurrentControlSet\services\pciide REG ADD HKLM\SYSTEM\CurrentControlSet\services\pciide /v Start /t reg_dword /d 0
+::DEBUG::
+%errorlevel%
+PAUSE
+
+IF EXIST HKLM\SYSTEM\CurrentControlSet\services\iaStorV REG ADD HKLM\SYSTEM\CurrentControlSet\services\iaStorV /v Start /t reg_dword /d 0
+::DEBUG::
+%errorlevel%
+PAUSE
+
+IF EXIST HKLM\SYSTEM\CurrentControlSet\services\Storahci REG ADD HKLM\SYSTEM\CurrentControlSet\services\Storahci /v Start /t reg_dword /d 0
+::DEBUG::
+%errorlevel%
+PAUSE
+
+ECHO Complete. It is now safe to reboot into the BIOS and
+ECHO change your SATA controller's mode.
 PAUSE
 GOTO TOOLBOX
-IF EXIST HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\msahci REG HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\msahci DO SOMETHING
-IF EXIST HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\pciide REG HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\pciide DO SOMETHING
-IF EXIST HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\iaStorV REG HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\iaStorV DO SOMETHING
-IF EXIST HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\Storahci REG HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\Storahci DO SOMETHING
-
-set Start to 0
 
 :EOF
 EXIT
