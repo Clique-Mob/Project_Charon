@@ -1,11 +1,11 @@
 @ECHO OFF
-TITLE Charon v0.6.0
+TITLE Charon v0.6.5
 COLOR 0c
 ::Created by the GCM team::
 ::Lane Garland (aka need2)::
 ::Samuel Brisby (aka spamuel42)::
 ::Tom B (aka r3l0ad)::
-::Revision 0.5.8::
+::Revision 0.6.5::
 
 ::Begin OS detection::
 ::Set default value. If OS is not found, then we don't support it!::
