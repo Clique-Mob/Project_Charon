@@ -407,7 +407,8 @@ ECHO controller is in. For example, your system is running SATA in
 ECHO IDE mode (slow), and you want AHCI (fast) or RAID. Running this
 ECHO before restarting and changing the BIOS setting will prevent
 ECHO Windows from crashing by telling Windows to redetect what type
-ECHO of drive the OS is running on. First restart will be somewhat
+ECHO of drive the OS is running on. Please make sure you have the
+ECHO drivers for the new mode installed. First restart will be somewhat
 ECHO slow, and one more restart will be required after successful
 ECHO booting in the new SATA mode. This must be run EVERY time you
 ECHO want to change SATA modes in the BIOS. Known to work in Vista
